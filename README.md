@@ -1,16 +1,136 @@
-# momoschool
+# \# 📱 MemoSchool
 
-A new Flutter project.
+# 
 
-## Getting Started
+# An interactive educational app designed to improve memory, focus, and learning through engaging mini-games.
 
-This project is a starting point for a Flutter application.
+# 
 
-A few resources to get you started if this is your first Flutter project:
+# \---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# \## 🚀 Features
+
+# 
+
+# \* 🧠 Brain training games (memory, logic, math)
+
+# \* 🎮 Interactive UI with smooth experience
+
+# \* 📊 Progress-based learning
+
+# \* 🇩🇿 Algeria-focused educational content
+
+# 
+
+# \---
+
+# 
+
+# \## 📸 Screenshots
+
+# 
+
+# <p align="center">
+
+# &#x20; <img src="docs/screenshots/home.png" width="250"/>
+
+# &#x20; <img src="docs/screenshots/game.png" width="250"/>
+
+# &#x20; <img src="docs/screenshots/result.png" width="250"/>
+
+# </p>
+
+# 
+
+# \---
+
+# 
+
+# \## 📦 Download APK
+
+# 
+
+# 👉 \[Download Latest Version](https://github.com/marouanekhadraoui/memoSchool/releases)
+
+# 
+
+# \---
+
+# 
+
+# \## 🛠️ Tech Stack
+
+# 
+
+# \* Flutter
+
+# \* Dart
+
+# \* Custom UI (Canvas / Game logic)
+
+# \* State management
+
+# 
+
+# \---
+
+# 
+
+# \## ⚙️ Installation
+
+# 
+
+# ```bash
+
+# git clone https://github.com/marouanekhadraoui/memoSchool.git
+
+# cd memoSchool
+
+# flutter pub get
+
+# flutter run
+
+# ```
+
+# 
+
+# \---
+
+# 
+
+# \## 💡 Project Idea
+
+# 
+
+# MemoSchool aims to make learning fun by combining education and gaming.
+
+# The goal is to enhance memory and cognitive skills in an engaging way.
+
+# 
+
+# \---
+
+# 
+
+# \## 👨‍💻 Author
+
+# 
+
+# \* Marouane Khadraoui
+
+# 
+
+# \---
+
+# 
+
+# \## ⭐ Support
+
+# 
+
+# If you like the project, give it a star ⭐
+
+
+
