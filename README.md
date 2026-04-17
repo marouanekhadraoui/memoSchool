@@ -2,6 +2,10 @@
 
 # 
 
+# 🔥 A smart educational app that transforms learning into an interactive game experience.
+
+# 
+
 # An interactive educational app designed to improve memory, focus, and learning through engaging mini-games.
 
 # 
@@ -14,13 +18,13 @@
 
 # 
 
-# \* 🧠 Brain training games (memory, logic, math)
+# \- 🧠 Brain training games (memory, logic, math)
 
-# \* 🎮 Interactive UI with smooth experience
+# \- 🎮 Interactive UI with smooth experience
 
-# \* 📊 Progress-based learning
+# \- 📊 Progress-based learning
 
-# \* 🇩🇿 Algeria-focused educational content
+# \- 🇩🇿 Algeria-focused educational content
 
 # 
 
@@ -32,13 +36,75 @@
 
 # 
 
+# \### 🏠 Home \& Navigation
+
 # <p align="center">
 
-# &#x20; <img src="docs/screenshots/home.png" width="250"/>
+# &#x20; <img src="docs/screenshots/home/home\_page.jpg" width="250"/>
 
-# &#x20; <img src="docs/screenshots/game.png" width="250"/>
+# &#x20; <img src="docs/screenshots/home/loading\_page.jpg" width="250"/>
 
-# &#x20; <img src="docs/screenshots/result.png" width="250"/>
+# &#x20; <img src="docs/screenshots/home/select\_games.jpg" width="250"/>
+
+# </p>
+
+# 
+
+# \---
+
+# 
+
+# \### 🎮 Games
+
+# <p align="center">
+
+# &#x20; <img src="docs/screenshots/games/algeria\_toor.jpg" width="200"/>
+
+# &#x20; <img src="docs/screenshots/games/calcule.jpg" width="200"/>
+
+# &#x20; <img src="docs/screenshots/games/poem.jpg" width="200"/>
+
+# &#x20; <img src="docs/screenshots/games/sudoku.jpg" width="200"/>
+
+# </p>
+
+# 
+
+# \---
+
+# 
+
+# \### 📊 Game Details
+
+# <p align="center">
+
+# &#x20; <img src="docs/screenshots/games\_details/algeria\_game\_detail.jpg" width="200"/>
+
+# &#x20; <img src="docs/screenshots/games\_details/calc\_game\_detail.jpg" width="200"/>
+
+# &#x20; <img src="docs/screenshots/games\_details/poem\_game\_detail.jpg" width="200"/>
+
+# &#x20; <img src="docs/screenshots/games\_details/sudoku\_game\_detail.jpg" width="200"/>
+
+# </p>
+
+# 
+
+# \---
+
+# 
+
+# \### 🚀 Onboarding
+
+# <p align="center">
+
+# &#x20; <img src="docs/screenshots/onbording/first One.jpg" width="200"/>
+
+# &#x20; <img src="docs/screenshots/onbording/second.jpg" width="200"/>
+
+# &#x20; <img src="docs/screenshots/onbording/therd.jpg" width="200"/>
+
+# &#x20; <img src="docs/screenshots/onbording/forth.jpg" width="200"/>
 
 # </p>
 
@@ -64,13 +130,13 @@
 
 # 
 
-# \* Flutter
+# \- Flutter
 
-# \* Dart
+# \- Dart
 
-# \* Custom UI (Canvas / Game logic)
+# \- Custom UI (Canvas / Game logic)
 
-# \* State management
+# \- State management
 
 # 
 
@@ -92,45 +158,45 @@
 
 # flutter run
 
-# ```
 
-# 
 
-# \---
 
-# 
 
 # \## 💡 Project Idea
 
 # 
 
-# MemoSchool aims to make learning fun by combining education and gaming.
+# &#x20;```bash
+
+# &#x20;MemoSchool aims to make learning fun by combining education and gaming.
 
 # The goal is to enhance memory and cognitive skills in an engaging way.
 
-# 
 
-# \---
-
-# 
 
 # \## 👨‍💻 Author
 
-# 
 
-# \* Marouane Khadraoui
 
-# 
+# &#x20;```bash
 
-# \---
+# &#x20;MAROUANE KHADRAOUI
 
-# 
+
+
+
 
 # \## ⭐ Support
 
-# 
 
-# If you like the project, give it a star ⭐
+
+# &#x20;```bash
+
+# &#x20;If you like the project, give it a star ⭐
+
+
+
+
 
 
 
