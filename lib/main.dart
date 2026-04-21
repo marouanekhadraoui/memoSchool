@@ -10,32 +10,47 @@ void main() async {
 
   final gameState = GameState();
 
-//   final NotificationService notificationService = NotificationService();
-//   await notificationService.initialize();
-//   await notificationService.requestPermissions();
+  // ─────────────────────────────────────────────
+  // NOTIFICATIONS BOOTSTRAP (FIXED + SAFE)
+  // ─────────────────────────────────────────────
+  final notificationService = NotificationService();
 
-//   final prefs = await SharedPreferences.getInstance();
-//   final bool notificationsScheduled = prefs.getBool('notifications_scheduled') ?? false;
+  try {
+    await notificationService.initialize();
+    await notificationService.requestPermissions();
 
-//   if (!notificationsScheduled) {
-//     // Schedule two random daily notifications (times are saved and will be reused)
-//     await notificationService.scheduleRandomDailyNotifications();
-//     await prefs.setBool('notifications_scheduled', true);
+    final prefs = await SharedPreferences.getInstance();
+    final bool notificationsScheduled =
+        prefs.getBool('notifications_scheduled') ?? false;
 
-//     
-// try {
-//   await notificationService.scheduleRandomDailyNotifications();
-//   await prefs.setBool('notifications_scheduled', true);
-// } catch (e) {
-//   debugPrint('Failed to schedule daily notifications: $e');
-// }
-//   }
+    // تشغيل أول مرة فقط (system safe)
+    if (!notificationsScheduled) {
+      await notificationService.scheduleDailyNotifications();
+
+      await prefs.setBool('notifications_scheduled', true);
+
+      debugPrint("✅ Notifications scheduled for first time");
+    } else {
+      // حتى لو سبق تشغيلها، نعيد التأكد أنها شغالة
+      await notificationService.scheduleDailyNotifications();
+
+      debugPrint("🔁 Notifications already existed → refreshed");
+    }
+
+    // اختبار سريع (اختياري لكن مهم للتحقق)
+    await notificationService.testNotification();
+    debugPrint("🧪 Test notification triggered (check phone)");
+
+  } catch (e) {
+    debugPrint("❌ Notification system failed: $e");
+  }
 
   runApp(MyApp(gameState: gameState));
 }
 
 class MyApp extends StatelessWidget {
   final GameState gameState;
+
   const MyApp({super.key, required this.gameState});
 
   @override

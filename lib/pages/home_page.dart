@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../game_state.dart';
 import 'game_details_page.dart';
 import '../services/notification_service.dart';
+import 'about.dart'; 
 
 // Game pages
 import '../games/calc_page.dart';
@@ -143,6 +144,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  void _goToAboutPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AboutPage()),
+    );
+  }
+
   // ---- Press animation for buttons ----
   bool _isPressed = false;
 
@@ -169,9 +177,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
 
           const Positioned.fill(child: ParticlesBackground()),
-
-        
-
 
           // MAIN CONTENT ----
           SafeArea(
@@ -206,59 +211,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ],
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(.7),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.stars, color: Colors.deepPurple, size: 18),
-                            const SizedBox(width: 4),
-                            Text("${gameState.points}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                            const SizedBox(width: 6),
-                            GestureDetector(
-                              onTap: () => _onPlusButtonPressed(gameState),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.deepPurple,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(Icons.add, color: Colors.white, size: 14),
-                              ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(.7),
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                          ],
-                        ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.stars, color: Colors.deepPurple, size: 18),
+                                const SizedBox(width: 4),
+                                Text("${gameState.points}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(width: 6),
+                                GestureDetector(
+                                  onTap: () => _onPlusButtonPressed(gameState),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.deepPurple,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(Icons.add, color: Colors.white, size: 14),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          // إضافة أيقونة "معلومات" للانتقال إلى AboutPage
+                          GestureDetector(
+                            onTap: _goToAboutPage,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.info_outline, color: Colors.deepPurple, size: 24),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 15), // increased spacing ----
-
-
-        //         GestureDetector(
-        //   onTap: () async {
-        //     final notificationService = NotificationService();
-        //     await notificationService.initialize();
-        //     await notificationService.requestPermissions();
-        //     await notificationService.scheduleTestNotification(delayInSeconds: 5);
-        //     ScaffoldMessenger.of(context).showSnackBar(
-        //       const SnackBar(content: Text('📢 Test notification in 5 sec')),
-        //     );
-        //   },
-        //   child: Container(
-        //     padding: const EdgeInsets.all(8),
-        //     decoration: BoxDecoration(
-        //       color: Colors.white.withOpacity(0.8),
-        //       shape: BoxShape.circle,
-        //     ),
-        //     child: const Icon(Icons.notifications_active, color: Colors.purple, size: 24),
-        //   ),
-        // ),
-        // const SizedBox(width: 8),
-
-
+                  const SizedBox(height: 15),
 
                   // Logo ----
                   Center(
@@ -269,7 +267,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
 
-                  const SizedBox(height: 12), // increased spacing ----
+                  const SizedBox(height: 12),
 
                   // PLAY GAMES button with press animation (3D press effect) ----
                   GestureDetector(
@@ -322,7 +320,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
 
-                  const SizedBox(height: 24), // increased spacing ----
+                  const SizedBox(height: 24),
 
                   // XP Progress Bar with Neumorphism style ----
                   Container(
@@ -367,7 +365,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
 
-                  const SizedBox(height: 20), // increased spacing ----
+                  const SizedBox(height: 20),
 
                   // Scrollable Dashboard + Suggestions ----
                   Expanded(
@@ -749,12 +747,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget gameItem(Map<String, dynamic> game) {
-    // Local press state for each game item (using StatefulBuilder or simple setState? 
-    // We'll use a simple GestureDetector with local state via a StatefulBuilder in the grid? 
-    // Easier: use a separate widget or manage with setState inside the builder.
-    // For simplicity, I'll use a StatefulBuilder in the grid item builder? 
-    // Actually, we can use a StatefulBuilder inside each gameItem by returning a StatefulBuilder widget.
-    // To keep code clean, I'll create a small Stateful widget inside.
     return _GameItem(
       game: game,
       onTap: () => _navigateToGame(context, game),
@@ -821,7 +813,7 @@ class _GameItemState extends State<_GameItem> {
   }
 }
 
-
+// باقي الكلاسات (ParticlesBackground, ParticlePainter, BrainStatBar) كما هي دون تغيير
 class ParticlesBackground extends StatefulWidget {
   const ParticlesBackground({super.key});
 

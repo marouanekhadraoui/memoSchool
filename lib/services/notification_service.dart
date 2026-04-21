@@ -1,213 +1,258 @@
-// // lib/services/notification_service.dart
-// import 'dart:math';
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:timezone/data/latest.dart' as tz;
-// import 'package:timezone/timezone.dart' as tz;
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:flutter/material.dart';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
-// class NotificationService {
-//   static final NotificationService _instance = NotificationService._internal();
-//   factory NotificationService() => _instance;
-//   NotificationService._internal();
+class NotificationService {
+  static final NotificationService _instance =
+      NotificationService._internal();
+  factory NotificationService() => _instance;
+  NotificationService._internal();
 
-//   final FlutterLocalNotificationsPlugin _notificationsPlugin =
-//       FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
 
-//   final List<String> _notificationMessages = [
-//     "🧠 Time to train your brain! Open the app now.",
-//     "🎓 Have you done your daily exercise? Don't miss out.",
-//     "💪 Your daily return is a step towards a brighter future.",
-//     "✨ A journey of a thousand miles begins with a single step. What's yours today?",
-//     "🏆 Keep your streak alive! Play and learn.",
-//     "🧩 A new puzzle awaits you in Sudoku!",
-//     "📖 Discover a new poem and sharpen your skills.",
-//     "🧮 Test your calculation speed and challenge yourself.",
-//     "⭐ Points and rewards are waiting for you. Join now!",
-//     "🔥 Don't break your momentum! Come and earn more points."
-//   ];
+  final Random _random = Random();
 
-//   String _getRandomMessage() {
-//     final randomIndex = DateTime.now().millisecondsSinceEpoch % _notificationMessages.length;
-//     return _notificationMessages[randomIndex];
-//   }
+  // ─────────────────────────────────────────────
+  // LOG SYSTEM (VERIFICATION CORE)
+  // ─────────────────────────────────────────────
+  Future<void> _log(String key, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("log_$key", value);
+  }
 
-//   /// Generate two random times with at least 4 hours difference
-//   (int hour1, int minute1, int hour2, int minute2) _generateRandomTimes() {
-//     final random = Random();
-//     int hour1 = random.nextInt(15) + 8; // 8 to 22
-//     int minute1 = random.nextInt(60);
-//     int offsetHours = random.nextInt(5) + 4; // 4 to 8 hours later
-//     int hour2 = (hour1 + offsetHours) % 24;
-//     int minute2 = random.nextInt(60);
-//     return (hour1, minute1, hour2, minute2);
-//   }
+  Future<String?> getLog(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("log_$key");
+  }
 
-//   /// Save generated times to SharedPreferences
-//   Future<void> _saveRandomTimes() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final times = _generateRandomTimes();
-//     await prefs.setInt('notif_hour1', times.$1);
-//     await prefs.setInt('notif_minute1', times.$2);
-//     await prefs.setInt('notif_hour2', times.$3);
-//     await prefs.setInt('notif_minute2', times.$4);
-//     await prefs.setBool('times_generated', true);
-//   }
+  // ─────────────────────────────────────────────
+  // MESSAGES
+  // ─────────────────────────────────────────────
+  final List<String> _messages = [
+    "🧠 Time to train your brain!",
+    "🎓 Don’t skip your daily practice.",
+    "💪 Small effort today = big results tomorrow.",
+    "✨ One step today, mastery tomorrow.",
+    "🏆 Keep your learning streak alive!",
+    "📖 A quick session can change your day.",
+    "🧮 Challenge your mind today!",
+    "⭐ Points are waiting for you!",
+    "🔥 Stay consistent, stay strong!"
+  ];
 
-//   /// Load saved times or generate new ones if not exist
-//   Future<(int, int, int, int)> _getSavedTimes() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final bool generated = prefs.getBool('times_generated') ?? false;
-//     if (!generated) {
-//       await _saveRandomTimes();
-//     }
-//     final h1 = prefs.getInt('notif_hour1') ?? 10;
-//     final m1 = prefs.getInt('notif_minute1') ?? 0;
-//     final h2 = prefs.getInt('notif_hour2') ?? 18;
-//     final m2 = prefs.getInt('notif_minute2') ?? 0;
-//     return (h1, m1, h2, m2);
-//   }
+  String _randomMessage() {
+    return _messages[_random.nextInt(_messages.length)];
+  }
 
-//   Future<void> initialize() async {
-//     tz.initializeTimeZones();
-//     tz.setLocalLocation(tz.getLocation('UTC'));
+  // ─────────────────────────────────────────────
+  // INIT (CRITICAL FIX)
+  // ─────────────────────────────────────────────
+  Future<void> initialize() async {
+    tz.initializeTimeZones();
 
-//     const AndroidInitializationSettings androidSettings =
-//         AndroidInitializationSettings('@mipmap/ic_launcher');
-//     const DarwinInitializationSettings iosSettings =
-//         DarwinInitializationSettings(
-//       requestAlertPermission: true,
-//       requestBadgePermission: true,
-//       requestSoundPermission: true,
-//     );
-//     const InitializationSettings settings = InitializationSettings(
-//       android: androidSettings,
-//       iOS: iosSettings,
-//     );
+    // IMPORTANT: proper local timezone setup
+    tz.setLocalLocation(tz.getLocation('UTC'));
 
-//     await _notificationsPlugin.initialize(settings);
-//   }
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
 
-//   Future<void> requestPermissions() async {
-//     await _notificationsPlugin.resolvePlatformSpecificImplementation<
-//         IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(
-//       alert: true,
-//       badge: true,
-//       sound: true,
-//     );
-//     // Request exact alarm permission for Android 12+ (optional, only for exact scheduling)
-//     await _notificationsPlugin
-//         .resolvePlatformSpecificImplementation<
-//             AndroidFlutterLocalNotificationsPlugin>()
-//         ?.requestExactAlarmsPermission();
-//   }
+    const ios = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
 
-//   /// Schedule a daily notification using inexact mode (no exact alarm permission needed)
-//   Future<void> _scheduleFixedDailyNotification({
-//     required int id,
-//     required int hour,
-//     required int minute,
-//   }) async {
-//     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-//     tz.TZDateTime scheduledDate = tz.TZDateTime(
-//       tz.local,
-//       now.year,
-//       now.month,
-//       now.day,
-//       hour,
-//       minute,
-//     );
+    const settings = InitializationSettings(
+      android: android,
+      iOS: ios,
+    );
 
-//     if (scheduledDate.isBefore(now)) {
-//       scheduledDate = scheduledDate.add(const Duration(days: 1));
-//     }
+    await _plugin.initialize(settings);
 
-//     final String randomMessage = _getRandomMessage();
+    await _log("init", "OK");
+  }
 
-//     const AndroidNotificationDetails androidDetails =
-//         AndroidNotificationDetails(
-//       'reminder_channel',
-//       'Daily Reminder',
-//       channelDescription: 'Daily reminder to play games and train your brain',
-//       importance: Importance.high,
-//       priority: Priority.high,
-//     );
-//     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails();
-//     const NotificationDetails details = NotificationDetails(
-//       android: androidDetails,
-//       iOS: iosDetails,
-//     );
+  // ─────────────────────────────────────────────
+  // PERMISSIONS
+  // ─────────────────────────────────────────────
+  Future<void> requestPermissions() async {
+    await _plugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
 
-//     await _notificationsPlugin.zonedSchedule(
-//       id,
-//       'MemoSchool Daily Reminder 🧠',
-//       randomMessage,
-//       scheduledDate,
-//       details,
-//       androidScheduleMode: AndroidScheduleMode.inexact,
-//       uiLocalNotificationDateInterpretation:
-//           UILocalNotificationDateInterpretation.absoluteTime,
-//       matchDateTimeComponents: DateTimeComponents.time,
-//     );
-//   }
+    await _plugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestExactAlarmsPermission();
 
-//   /// Schedule two random daily notifications (times are fixed after first generation)
-//   Future<void> scheduleRandomDailyNotifications() async {
-//     final times = await _getSavedTimes();
-//     await _scheduleFixedDailyNotification(id: 1, hour: times.$1, minute: times.$2);
-//     await _scheduleFixedDailyNotification(id: 2, hour: times.$3, minute: times.$4);
-//   }
+    await _log("permissions", "OK");
+  }
 
-//   /// Schedule a test notification (uses exact mode, may require permission)
-//   Future<void> scheduleTestNotification({int delayInSeconds = 5}) async {
-//     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-//     final tz.TZDateTime scheduledDate = now.add(Duration(seconds: delayInSeconds));
+  // ─────────────────────────────────────────────
+  // DAILY RANDOM TIMES ENGINE
+  // ─────────────────────────────────────────────
+  Future<(int, int, int, int)> _generateTimes() async {
+    int h1 = _random.nextInt(14) + 8; // 8 → 22
+    int m1 = _random.nextInt(60);
 
-//     const AndroidNotificationDetails androidDetails =
-//         AndroidNotificationDetails(
-//       'test_channel',
-//       'Test Notifications',
-//       channelDescription: 'Channel for test notifications',
-//       importance: Importance.high,
-//       priority: Priority.high,
-//     );
-//     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails();
-//     const NotificationDetails details = NotificationDetails(
-//       android: androidDetails,
-//       iOS: iosDetails,
-//     );
+    int h2 = (h1 + _random.nextInt(6) + 3) % 24;
+    int m2 = _random.nextInt(60);
 
-//     try {
-//       await _notificationsPlugin.zonedSchedule(
-//         999,
-//         '🧪 Test Notification',
-//         'This is a test notification from MemoSchool! (${DateTime.now().toLocal()})',
-//         scheduledDate,
-//         details,
-//         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-//         uiLocalNotificationDateInterpretation:
-//             UILocalNotificationDateInterpretation.absoluteTime,
-//       );
-//     } catch (e) {
-//       debugPrint('Test notification exact mode failed: $e, falling back to inexact');
-//       await _notificationsPlugin.zonedSchedule(
-//         999,
-//         '🧪 Test Notification',
-//         'This is a test notification from MemoSchool! (${DateTime.now().toLocal()})',
-//         scheduledDate,
-//         details,
-//         androidScheduleMode: AndroidScheduleMode.inexact,
-//         uiLocalNotificationDateInterpretation:
-//             UILocalNotificationDateInterpretation.absoluteTime,
-//       );
-//     }
-//   }
+    await _log("generated_times", "$h1:$m1 | $h2:$m2");
 
-//   Future<void> cancelAllNotifications() async {
-//     await _notificationsPlugin.cancelAll();
-//   }
+    return (h1, m1, h2, m2);
+  }
 
-//   Future<List<PendingNotificationRequest>> getPendingNotifications() async {
-//     return await _notificationsPlugin.pendingNotificationRequests();
-//   }
-// }
+  Future<void> _ensureDailyTimes() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    final last = prefs.getString("schedule_day");
+
+    if (last != today) {
+      final t = await _generateTimes();
+
+      await prefs.setInt("h1", t.$1);
+      await prefs.setInt("m1", t.$2);
+      await prefs.setInt("h2", t.$3);
+      await prefs.setInt("m2", t.$4);
+
+      await prefs.setString("schedule_day", today);
+
+      await _log("schedule", "NEW_DAY");
+    } else {
+      await _log("schedule", "EXISTING_DAY");
+    }
+  }
+
+  Future<(int, int, int, int)> _getTimes() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return (
+      prefs.getInt("h1") ?? 10,
+      prefs.getInt("m1") ?? 0,
+      prefs.getInt("h2") ?? 18,
+      prefs.getInt("m2") ?? 0,
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // SCHEDULE CORE
+  // ─────────────────────────────────────────────
+  Future<void> _schedule({
+    required int id,
+    required int hour,
+    required int minute,
+  }) async {
+    final now = tz.TZDateTime.now(tz.local);
+
+    var scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
+
+    if (scheduled.isBefore(now)) {
+      scheduled = scheduled.add(const Duration(days: 1));
+    }
+
+    await _log("schedule_$id", "$hour:$minute");
+
+    const android = AndroidNotificationDetails(
+      'memo_channel',
+      'MemoSchool',
+      channelDescription: 'Daily learning reminders',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const details = NotificationDetails(android: android);
+
+    await _plugin.zonedSchedule(
+      id,
+      "MemoSchool 🧠",
+      _randomMessage(),
+      scheduled,
+      details,
+      androidScheduleMode: AndroidScheduleMode.inexact,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+
+    await _log("scheduled_$id", "OK");
+  }
+
+  // ─────────────────────────────────────────────
+  // PUBLIC MAIN ENGINE
+  // ─────────────────────────────────────────────
+  Future<void> scheduleDailyNotifications() async {
+    await _ensureDailyTimes();
+
+    final t = await _getTimes();
+
+    await _schedule(id: 1, hour: t.$1, minute: t.$2);
+    await _schedule(id: 2, hour: t.$3, minute: t.$4);
+
+    await _log("final", "ALL_OK");
+  }
+
+  // ─────────────────────────────────────────────
+  // TEST NOTIFICATION (REAL VERIFICATION)
+  // ─────────────────────────────────────────────
+  Future<void> testNotification() async {
+    final now = tz.TZDateTime.now(tz.local).add(
+      const Duration(seconds: 5),
+    );
+
+    const android = AndroidNotificationDetails(
+      'test_channel',
+      'Test',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const details = NotificationDetails(android: android);
+
+    await _plugin.zonedSchedule(
+      999,
+      "TEST 🧪",
+      "If you see this → WORKING",
+      now,
+      details,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+
+    await _log("test", "FIRED");
+  }
+
+  // ─────────────────────────────────────────────
+  // DEBUG STATUS CHECKER
+  // ─────────────────────────────────────────────
+  Future<Map<String, String?>> debugStatus() async {
+    return {
+      "init": await getLog("init"),
+      "permissions": await getLog("permissions"),
+      "schedule": await getLog("schedule"),
+      "final": await getLog("final"),
+      "test": await getLog("test"),
+    };
+  }
+
+  // ─────────────────────────────────────────────
+  // CANCEL
+  // ─────────────────────────────────────────────
+  Future<void> cancelAll() async {
+    await _plugin.cancelAll();
+    await _log("cancel", "CLEARED");
+  }
+}
